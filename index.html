@@ -229,6 +229,7 @@
             <div id="controls">
                 <button class="btn" onclick="turn('left')">[A]</button>
                 <button class="btn" id="btn-fwd" onclick="move()">[W]</button>
+                <button class="btn" id="btn-back" onclick="moveBack()">[S]</button>
                 <button class="btn" onclick="turn('right')">[D]</button>
                 <button class="btn" id="btn-enter" onclick="enterRoom()" style="display:none">[SPACE]</button>
             </div>
@@ -284,6 +285,7 @@
         ];
 
         const names = { 1: 'HALLWAY', 2: 'ABOUT', 3: '???', 4: 'LINKEDIN' };
+        const symbols = { 1: '.', 2: 'A', 3: '?', 4: 'L' };
         const explored = new Set();
         let px = 5, py = 6, pdir = 0;
         const dirs = [{dx:0,dy:-1,n:'N'},{dx:1,dy:0,n:'E'},{dx:0,dy:1,n:'S'},{dx:-1,dy:0,n:'W'}];
@@ -308,13 +310,11 @@
                     if (x === px && y === py) {
                         out += ['^','>','v','<'][pdir];
                     } else if (!explored.has(`${x},${y}`)) {
-                        out += '?';
+                        out += ' ';
                     } else if (map[y][x] === 0) {
                         out += '#';
-                    } else if (map[y][x] === 1) {
-                        out += '.';
                     } else {
-                        out += '*';
+                        out += symbols[map[y][x]] || '.';
                     }
                 }
                 out += '\n';
@@ -331,27 +331,39 @@
             const l1 = cell(px+dirs[(pdir+3)%4].dx, py+dirs[(pdir+3)%4].dy);
             const r1 = cell(px+dirs[(pdir+1)%4].dx, py+dirs[(pdir+1)%4].dy);
 
-            // walls with depth
-            const drawWall = (t,b,l,r,c) => {
-                for(let y=t;y<b;y++) for(let x=l;x<r;x++) v[y][x] = c[(x+y)%2];
-            };
+            // floor/ceiling first
+            for(let x=0;x<W;x++) { v[0][x]=v[1][x]='`'; v[H-1][x]=v[H-2][x]='.'; }
 
-            if(a2===0) drawWall(6,H-6,15,W-15,['0','1']);
-            if(a1===0) drawWall(3,H-3,8,W-8,['0','1']);
-            if(l1===0) for(let y=0;y<H;y++) for(let x=0;x<6;x++) if(Math.random()<(6-x)/8) v[y][x]=['0','1'][(x+y)%2];
-            if(r1===0) for(let y=0;y<H;y++) for(let x=W-6;x<W;x++) if(Math.random()<(x-W+7)/8) v[y][x]=['0','1'][(x+y)%2];
+            // left wall
+            if(l1===0) for(let y=2;y<H-2;y++) for(let x=0;x<6;x++) if(Math.random()<(6-x)/8) v[y][x]=['0','1'][(x+y)%2];
 
-            // door
-            if(a1>1) {
-                for(let x=15;x<W-15;x++) { v[4][x]='='; v[H-4][x]='='; }
-                for(let y=4;y<H-3;y++) { v[y][15]='|'; v[y][W-16]='|'; }
-                const lbl = names[a1] || '?';
+            // right wall
+            if(r1===0) for(let y=2;y<H-2;y++) for(let x=W-6;x<W;x++) if(Math.random()<(x-W+7)/8) v[y][x]=['0','1'][(x+y)%2];
+
+            // front wall or door
+            if(a1===0) {
+                // solid wall ahead
+                for(let y=3;y<H-3;y++) for(let x=8;x<W-8;x++) v[y][x]=['0','1'][(x+y)%2];
+            } else if(a1>1) {
+                // door to a room - draw it clearly
+                const doorL = 12, doorR = W-12, doorT = 3, doorB = H-3;
+                // clear door area
+                for(let y=doorT;y<doorB;y++) for(let x=doorL;x<doorR;x++) v[y][x]=' ';
+                // door frame
+                for(let x=doorL;x<doorR;x++) { v[doorT][x]='='; v[doorB-1][x]='='; }
+                for(let y=doorT;y<doorB;y++) { v[y][doorL]='|'; v[y][doorR-1]='|'; }
+                // room label centered
+                const lbl = '[ ' + (names[a1] || '?') + ' ]';
                 const lx = Math.floor((W-lbl.length)/2);
-                for(let i=0;i<lbl.length;i++) v[6][lx+i] = lbl[i];
+                for(let i=0;i<lbl.length;i++) v[Math.floor(H/2)][lx+i] = lbl[i];
+                // ENTER prompt
+                const prompt = 'SPACE TO ENTER';
+                const px2 = Math.floor((W-prompt.length)/2);
+                for(let i=0;i<prompt.length;i++) v[Math.floor(H/2)+2][px2+i] = prompt[i];
+            } else if(a2===0) {
+                // wall at distance 2
+                for(let y=5;y<H-5;y++) for(let x=12;x<W-12;x++) v[y][x]=['0','1'][(x+y)%2];
             }
-
-            // floor/ceiling
-            for(let x=0;x<W;x++) { v[0][x]=v[1][x]='`'[0]; v[H-1][x]=v[H-2][x]='.'; }
 
             return v.map(r=>r.join('')).join('\n');
         }
@@ -364,12 +376,18 @@
             const ahead = cell(px+d.dx, py+d.dy);
             document.getElementById('location').textContent = `${names[cell(px,py)]||'?'} [${d.n}]`;
             document.getElementById('btn-fwd').disabled = !canGo(px+d.dx, py+d.dy);
+            document.getElementById('btn-back').disabled = !canGo(px-d.dx, py-d.dy);
             document.getElementById('btn-enter').style.display = ahead > 1 ? 'inline-block' : 'none';
         }
 
         function move() {
             const d = dirs[pdir];
             if(canGo(px+d.dx, py+d.dy)) { px+=d.dx; py+=d.dy; render(); }
+        }
+
+        function moveBack() {
+            const d = dirs[pdir];
+            if(canGo(px-d.dx, py-d.dy)) { px-=d.dx; py-=d.dy; render(); }
         }
 
         function turn(dir) {
@@ -404,6 +422,7 @@
                 return;
             }
             if(e.key==='w'||e.key==='ArrowUp') move();
+            if(e.key==='s'||e.key==='ArrowDown') moveBack();
             if(e.key==='a'||e.key==='ArrowLeft') turn('left');
             if(e.key==='d'||e.key==='ArrowRight') turn('right');
             if(e.key===' ') enterRoom();
