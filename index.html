@@ -5,28 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GUJANICIC</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #000;
             color: #0f0;
             font-family: 'Courier New', monospace;
             overflow: hidden;
             height: 100vh;
-            width: 100vw;
         }
 
-        /* INTRO ANIMATION */
         #intro {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -37,71 +27,58 @@
 
         #matrix-bg {
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             font-size: 14px;
             line-height: 1.2;
             overflow: hidden;
-            opacity: 0.7;
+            opacity: 0.6;
         }
 
-        .matrix-column {
+        .matrix-col {
             position: absolute;
             top: -100%;
             color: #0f0;
-            text-shadow: 0 0 10px #0f0;
+            text-shadow: 0 0 8px #0f0;
             animation: fall linear infinite;
             white-space: pre;
         }
 
         @keyframes fall {
-            0% { transform: translateY(-100%); }
-            100% { transform: translateY(calc(100vh + 100%)); }
+            to { transform: translateY(calc(100vh + 100%)); }
         }
 
         #glitch-text {
-            font-size: 48px;
+            font-size: clamp(32px, 8vw, 64px);
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 10px;
-            position: relative;
+            letter-spacing: 8px;
             z-index: 10;
             text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
-            animation: glitch 0.5s infinite;
+            animation: glitch 0.3s infinite;
         }
 
         @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); opacity: 1; }
-            91% { transform: translate(-2px, 1px); opacity: 0.8; }
-            92% { transform: translate(2px, -1px); opacity: 0.9; }
-            93% { transform: translate(-1px, 2px); opacity: 0.7; }
+            0%, 90%, 100% { transform: translate(0); }
+            92% { transform: translate(-2px, 1px); }
+            94% { transform: translate(2px, -1px); }
         }
 
         #enter-prompt {
             display: none;
-            font-size: 20px;
-            margin-top: 40px;
+            font-size: 16px;
+            margin-top: 30px;
             z-index: 10;
             animation: blink 1s infinite;
             cursor: pointer;
-            padding: 15px 30px;
-            border: 2px solid #0f0;
-            text-shadow: 0 0 10px #0f0;
+            padding: 12px 24px;
+            border: 1px solid #0f0;
         }
 
-        #enter-prompt:hover {
-            background: #0f0;
-            color: #000;
-        }
+        #enter-prompt:hover { background: #0f0; color: #000; }
 
         @keyframes blink {
-            0%, 50% { opacity: 1; }
-            51%, 100% { opacity: 0.3; }
+            50% { opacity: 0.3; }
         }
 
-        /* GAME CONTAINER */
         #game {
             display: none;
             width: 100%;
@@ -109,68 +86,75 @@
             flex-direction: column;
         }
 
+        #main-area {
+            flex: 1;
+            display: flex;
+            position: relative;
+        }
+
         #viewport {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: clamp(8px, 1.5vw, 14px);
+            line-height: 1.1;
+            white-space: pre;
+            text-shadow: 0 0 4px #0f0;
+        }
+
+        #minimap {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 10px;
+            border: 1px solid #0f0;
+            background: rgba(0,0,0,0.8);
             font-size: 12px;
             line-height: 1;
             white-space: pre;
-            text-shadow: 0 0 5px #0f0;
+        }
+
+        #minimap-title {
+            text-align: center;
+            margin-bottom: 8px;
+            font-size: 10px;
+            opacity: 0.7;
         }
 
         #hud {
-            padding: 20px;
-            border-top: 2px solid #0f0;
-            text-align: center;
-            font-size: 14px;
+            padding: 15px;
+            border-top: 1px solid #0f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        #location {
-            font-size: 18px;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px #0f0;
-        }
+        #location { font-size: 14px; }
 
         #controls {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 8px;
         }
 
-        .control-btn {
+        .btn {
             background: transparent;
-            border: 2px solid #0f0;
+            border: 1px solid #0f0;
             color: #0f0;
-            padding: 10px 20px;
-            font-family: 'Courier New', monospace;
-            font-size: 14px;
+            padding: 8px 16px;
+            font-family: inherit;
+            font-size: 12px;
             cursor: pointer;
-            text-shadow: 0 0 5px #0f0;
-            transition: all 0.2s;
         }
 
-        .control-btn:hover, .control-btn.active {
-            background: #0f0;
-            color: #000;
-        }
+        .btn:hover { background: #0f0; color: #000; }
+        .btn:disabled { opacity: 0.2; cursor: not-allowed; }
 
-        .control-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* ROOM CONTENT OVERLAY */
         #room-content {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
+            inset: 0;
+            background: rgba(0,0,0,0.95);
             z-index: 100;
             flex-direction: column;
             justify-content: center;
@@ -178,162 +162,116 @@
             padding: 40px;
         }
 
-        #room-content.visible {
-            display: flex;
-        }
+        #room-content.visible { display: flex; }
 
         #room-content h1 {
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-shadow: 0 0 20px #0f0;
+            font-size: 28px;
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px #0f0;
         }
 
         #room-content .content {
-            max-width: 800px;
             text-align: center;
-            font-size: 16px;
-            line-height: 1.8;
-        }
-
-        #room-content .ascii-icon {
-            font-size: 10px;
-            line-height: 1;
-            margin: 20px 0;
-            text-shadow: 0 0 10px #0f0;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         #room-content a {
             color: #0f0;
             text-decoration: none;
-            border: 2px solid #0f0;
-            padding: 15px 30px;
+            border: 1px solid #0f0;
+            padding: 10px 20px;
             display: inline-block;
-            margin-top: 20px;
-            transition: all 0.2s;
+            margin-top: 15px;
         }
 
-        #room-content a:hover {
-            background: #0f0;
-            color: #000;
-        }
+        #room-content a:hover { background: #0f0; color: #000; }
 
         #close-room {
             position: absolute;
-            top: 30px;
-            right: 30px;
+            top: 20px;
+            right: 20px;
             background: transparent;
-            border: 2px solid #0f0;
+            border: 1px solid #0f0;
             color: #0f0;
-            padding: 10px 20px;
-            font-family: 'Courier New', monospace;
+            padding: 8px 16px;
+            font-family: inherit;
             cursor: pointer;
         }
 
-        #close-room:hover {
-            background: #0f0;
-            color: #000;
-        }
-
-        /* EASTER EGG */
-        .easter-egg {
-            animation: rainbow 2s infinite;
-        }
+        .easter-egg { animation: rainbow 2s infinite; }
 
         @keyframes rainbow {
-            0% { color: #ff0000; text-shadow: 0 0 20px #ff0000; }
-            16% { color: #ff8800; text-shadow: 0 0 20px #ff8800; }
-            33% { color: #ffff00; text-shadow: 0 0 20px #ffff00; }
-            50% { color: #00ff00; text-shadow: 0 0 20px #00ff00; }
-            66% { color: #0088ff; text-shadow: 0 0 20px #0088ff; }
-            83% { color: #8800ff; text-shadow: 0 0 20px #8800ff; }
-            100% { color: #ff0000; text-shadow: 0 0 20px #ff0000; }
+            0% { color: #f00; text-shadow: 0 0 15px #f00; }
+            33% { color: #0f0; text-shadow: 0 0 15px #0f0; }
+            66% { color: #00f; text-shadow: 0 0 15px #00f; }
+            100% { color: #f00; text-shadow: 0 0 15px #f00; }
         }
     </style>
 </head>
 <body>
-    <!-- INTRO SCREEN -->
     <div id="intro">
         <div id="matrix-bg"></div>
         <div id="glitch-text">GUJANICIC</div>
-        <div id="enter-prompt" onclick="enterGame()">[PRESS ENTER OR CLICK TO JACK IN]</div>
+        <div id="enter-prompt" onclick="enterGame()">[ENTER]</div>
     </div>
 
-    <!-- GAME -->
     <div id="game">
-        <div id="viewport"></div>
+        <div id="main-area">
+            <div id="viewport"></div>
+            <div id="minimap">
+                <div id="minimap-title">MAP</div>
+                <div id="minimap-grid"></div>
+            </div>
+        </div>
         <div id="hud">
-            <div id="location">HALLWAY</div>
-            <div id="directions"></div>
+            <div id="location"></div>
             <div id="controls">
-                <button class="control-btn" id="btn-left" onclick="turn('left')">[A] LEFT</button>
-                <button class="control-btn" id="btn-forward" onclick="move()">[W] FORWARD</button>
-                <button class="control-btn" id="btn-right" onclick="turn('right')">[D] RIGHT</button>
-                <button class="control-btn" id="btn-enter" onclick="enterRoom()" style="display:none">[SPACE] ENTER</button>
+                <button class="btn" onclick="turn('left')">[A]</button>
+                <button class="btn" id="btn-fwd" onclick="move()">[W]</button>
+                <button class="btn" onclick="turn('right')">[D]</button>
+                <button class="btn" id="btn-enter" onclick="enterRoom()" style="display:none">[SPACE]</button>
             </div>
         </div>
     </div>
 
-    <!-- ROOM CONTENT OVERLAY -->
     <div id="room-content">
-        <button id="close-room" onclick="closeRoom()">[ESC] BACK</button>
+        <button id="close-room" onclick="closeRoom()">[ESC]</button>
         <div id="room-inner"></div>
     </div>
 
     <script>
-        // ============ INTRO ANIMATION ============
-        const matrixBg = document.getElementById('matrix-bg');
-        const introScreen = document.getElementById('intro');
-        const enterPrompt = document.getElementById('enter-prompt');
-        const gameScreen = document.getElementById('game');
-
-        function createMatrixRain() {
-            const columns = Math.floor(window.innerWidth / 20);
-
-            for (let i = 0; i < columns; i++) {
-                const column = document.createElement('div');
-                column.className = 'matrix-column';
-                column.style.left = (i * 20) + 'px';
-                column.style.animationDuration = (Math.random() * 3 + 2) + 's';
-                column.style.animationDelay = (Math.random() * 3) + 's';
-
-                let text = '';
-                const height = Math.floor(Math.random() * 30 + 20);
-                for (let j = 0; j < height; j++) {
-                    text += Math.random() > 0.5 ? '1' : '0';
-                    text += '\n';
-                }
-                column.textContent = text;
-                matrixBg.appendChild(column);
+        // INTRO
+        function createMatrix() {
+            const bg = document.getElementById('matrix-bg');
+            const cols = Math.floor(window.innerWidth / 18);
+            for (let i = 0; i < cols; i++) {
+                const col = document.createElement('div');
+                col.className = 'matrix-col';
+                col.style.left = i * 18 + 'px';
+                col.style.animationDuration = (2 + Math.random() * 2) + 's';
+                col.style.animationDelay = Math.random() * 2 + 's';
+                let t = '';
+                for (let j = 0; j < 40; j++) t += (Math.random() > 0.5 ? '1' : '0') + '\n';
+                col.textContent = t;
+                bg.appendChild(col);
             }
         }
 
-        function startIntro() {
-            createMatrixRain();
-
-            // Show enter prompt after 3 seconds
-            setTimeout(() => {
-                enterPrompt.style.display = 'block';
-            }, 3000);
-        }
+        createMatrix();
+        setTimeout(() => document.getElementById('enter-prompt').style.display = 'block', 1500);
 
         function enterGame() {
-            introScreen.style.display = 'none';
-            gameScreen.style.display = 'flex';
-            renderView();
+            document.getElementById('intro').style.display = 'none';
+            document.getElementById('game').style.display = 'flex';
+            render();
         }
 
-        // Listen for Enter key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && introScreen.style.display !== 'none') {
-                enterGame();
-            }
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Enter' && document.getElementById('intro').style.display !== 'none') enterGame();
         });
 
-        startIntro();
-
-        // ============ 3D ASCII GAME ENGINE ============
-
-        // Map layout - 0 = wall, 1 = hallway, 2 = about me, 3 = easter egg, 4 = linkedin
+        // MAP: 0=wall, 1=hall, 2=about, 3=easter, 4=linkedin
         const map = [
             [0,0,0,0,0,0,0,0,0,0,0],
             [0,2,2,0,3,3,0,4,4,4,0],
@@ -345,341 +283,130 @@
             [0,0,0,0,0,0,0,0,0,0,0],
         ];
 
-        const roomNames = {
-            0: 'WALL',
-            1: 'HALLWAY',
-            2: 'ABOUT_ME',
-            3: '???',
-            4: 'LINKEDIN'
-        };
+        const names = { 1: 'HALLWAY', 2: 'ABOUT', 3: '???', 4: 'LINKEDIN' };
+        const explored = new Set();
+        let px = 5, py = 6, pdir = 0;
+        const dirs = [{dx:0,dy:-1,n:'N'},{dx:1,dy:0,n:'E'},{dx:0,dy:1,n:'S'},{dx:-1,dy:0,n:'W'}];
 
-        // Player state
-        let player = {
-            x: 5,
-            y: 6,
-            dir: 0 // 0=N, 1=E, 2=S, 3=W
-        };
+        function cell(x,y) { return (y>=0 && y<map.length && x>=0 && x<map[0].length) ? map[y][x] : 0; }
+        function canGo(x,y) { return cell(x,y) !== 0; }
 
-        const dirs = [
-            { dx: 0, dy: -1, name: 'NORTH' },
-            { dx: 1, dy: 0, name: 'EAST' },
-            { dx: 0, dy: 1, name: 'SOUTH' },
-            { dx: -1, dy: 0, name: 'WEST' }
-        ];
-
-        function getCell(x, y) {
-            if (y < 0 || y >= map.length || x < 0 || x >= map[0].length) return 0;
-            return map[y][x];
+        function markExplored() {
+            explored.add(`${px},${py}`);
+            // reveal adjacent
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    explored.add(`${px+dx},${py+dy}`);
+                }
+            }
         }
 
-        function canMove(x, y) {
-            return getCell(x, y) !== 0;
+        function renderMinimap() {
+            let out = '';
+            for (let y = 0; y < map.length; y++) {
+                for (let x = 0; x < map[0].length; x++) {
+                    if (x === px && y === py) {
+                        out += ['^','>','v','<'][pdir];
+                    } else if (!explored.has(`${x},${y}`)) {
+                        out += '?';
+                    } else if (map[y][x] === 0) {
+                        out += '#';
+                    } else if (map[y][x] === 1) {
+                        out += '.';
+                    } else {
+                        out += '*';
+                    }
+                }
+                out += '\n';
+            }
+            document.getElementById('minimap-grid').textContent = out;
         }
 
-        function render3DView() {
-            const width = 60;
-            const height = 25;
-            const view = [];
+        function render3D() {
+            const W = 50, H = 20;
+            const v = Array.from({length:H}, () => Array(W).fill(' '));
+            const d = dirs[pdir];
+            const a1 = cell(px+d.dx, py+d.dy);
+            const a2 = cell(px+d.dx*2, py+d.dy*2);
+            const l1 = cell(px+dirs[(pdir+3)%4].dx, py+dirs[(pdir+3)%4].dy);
+            const r1 = cell(px+dirs[(pdir+1)%4].dx, py+dirs[(pdir+1)%4].dy);
 
-            for (let i = 0; i < height; i++) {
-                view.push(new Array(width).fill(' '));
+            // walls with depth
+            const drawWall = (t,b,l,r,c) => {
+                for(let y=t;y<b;y++) for(let x=l;x<r;x++) v[y][x] = c[(x+y)%2];
+            };
+
+            if(a2===0) drawWall(6,H-6,15,W-15,['0','1']);
+            if(a1===0) drawWall(3,H-3,8,W-8,['0','1']);
+            if(l1===0) for(let y=0;y<H;y++) for(let x=0;x<6;x++) if(Math.random()<(6-x)/8) v[y][x]=['0','1'][(x+y)%2];
+            if(r1===0) for(let y=0;y<H;y++) for(let x=W-6;x<W;x++) if(Math.random()<(x-W+7)/8) v[y][x]=['0','1'][(x+y)%2];
+
+            // door
+            if(a1>1) {
+                for(let x=15;x<W-15;x++) { v[4][x]='='; v[H-4][x]='='; }
+                for(let y=4;y<H-3;y++) { v[y][15]='|'; v[y][W-16]='|'; }
+                const lbl = names[a1] || '?';
+                const lx = Math.floor((W-lbl.length)/2);
+                for(let i=0;i<lbl.length;i++) v[6][lx+i] = lbl[i];
             }
 
-            const d = dirs[player.dir];
-            const leftDir = dirs[(player.dir + 3) % 4];
-            const rightDir = dirs[(player.dir + 1) % 4];
+            // floor/ceiling
+            for(let x=0;x<W;x++) { v[0][x]=v[1][x]='`'[0]; v[H-1][x]=v[H-2][x]='.'; }
 
-            // Check what's ahead at different distances
-            const ahead1 = getCell(player.x + d.dx, player.y + d.dy);
-            const ahead2 = getCell(player.x + d.dx * 2, player.y + d.dy * 2);
-            const ahead3 = getCell(player.x + d.dx * 3, player.y + d.dy * 3);
-
-            const left1 = getCell(player.x + leftDir.dx, player.y + leftDir.dy);
-            const right1 = getCell(player.x + rightDir.dx, player.y + rightDir.dy);
-
-            // Draw based on what we see
-            const chars = ['0', '1'];
-
-            // Far wall (distance 3)
-            if (ahead3 === 0 || ahead2 === 0) {
-                const wallStart = ahead2 === 0 ? 8 : 12;
-                const wallEnd = ahead2 === 0 ? height - 8 : height - 12;
-                const wallLeft = ahead2 === 0 ? 15 : 20;
-                const wallRight = ahead2 === 0 ? width - 15 : width - 20;
-
-                for (let y = wallStart; y < wallEnd; y++) {
-                    for (let x = wallLeft; x < wallRight; x++) {
-                        view[y][x] = chars[(x + y) % 2];
-                    }
-                }
-            }
-
-            // Medium wall (distance 2)
-            if (ahead2 === 0 || ahead1 === 0) {
-                const wallStart = ahead1 === 0 ? 4 : 8;
-                const wallEnd = ahead1 === 0 ? height - 4 : height - 8;
-                const wallLeft = ahead1 === 0 ? 8 : 15;
-                const wallRight = ahead1 === 0 ? width - 8 : width - 15;
-
-                for (let y = wallStart; y < wallEnd; y++) {
-                    for (let x = wallLeft; x < wallRight; x++) {
-                        view[y][x] = chars[(x + y) % 2];
-                    }
-                }
-            }
-
-            // Close wall (distance 1) - fills most of screen
-            if (ahead1 === 0) {
-                for (let y = 2; y < height - 2; y++) {
-                    for (let x = 5; x < width - 5; x++) {
-                        view[y][x] = chars[(x + y) % 2];
-                    }
-                }
-            }
-
-            // Left wall
-            if (left1 === 0) {
-                for (let y = 0; y < height; y++) {
-                    for (let x = 0; x < 8; x++) {
-                        const intensity = 8 - x;
-                        if (Math.random() < intensity / 10) {
-                            view[y][x] = chars[(x + y) % 2];
-                        }
-                    }
-                }
-            }
-
-            // Right wall
-            if (right1 === 0) {
-                for (let y = 0; y < height; y++) {
-                    for (let x = width - 8; x < width; x++) {
-                        const intensity = x - (width - 8);
-                        if (Math.random() < intensity / 10) {
-                            view[y][x] = chars[(x + y) % 2];
-                        }
-                    }
-                }
-            }
-
-            // Draw doorway if room ahead
-            if (ahead1 > 1) {
-                // Draw door frame
-                const doorTop = 5;
-                const doorBottom = height - 3;
-                const doorLeft = 20;
-                const doorRight = width - 20;
-
-                // Top of door
-                for (let x = doorLeft; x < doorRight; x++) {
-                    view[doorTop][x] = '=';
-                }
-                // Sides
-                for (let y = doorTop; y < doorBottom; y++) {
-                    view[y][doorLeft] = '|';
-                    view[y][doorRight - 1] = '|';
-                }
-                // Bottom
-                for (let x = doorLeft; x < doorRight; x++) {
-                    view[doorBottom][x] = '=';
-                }
-
-                // Room label
-                const label = roomNames[ahead1];
-                const labelX = Math.floor((width - label.length) / 2);
-                for (let i = 0; i < label.length; i++) {
-                    view[doorTop + 2][labelX + i] = label[i];
-                }
-            }
-
-            // Draw floor
-            for (let y = height - 2; y < height; y++) {
-                for (let x = 0; x < width; x++) {
-                    if (view[y][x] === ' ') {
-                        view[y][x] = (x % 4 < 2) ? '.' : ' ';
-                    }
-                }
-            }
-
-            // Draw ceiling
-            for (let y = 0; y < 2; y++) {
-                for (let x = 0; x < width; x++) {
-                    if (view[y][x] === ' ') {
-                        view[y][x] = (x % 4 < 2) ? '`' : ' ';
-                    }
-                }
-            }
-
-            // Draw arrow indicator in center
-            const arrowY = height - 4;
-            const arrowX = Math.floor(width / 2);
-            if (ahead1 !== 0) {
-                view[arrowY - 1][arrowX] = '^';
-                view[arrowY][arrowX - 1] = '/';
-                view[arrowY][arrowX + 1] = '\\';
-            }
-
-            return view.map(row => row.join('')).join('\n');
+            return v.map(r=>r.join('')).join('\n');
         }
 
-        function renderView() {
-            const viewport = document.getElementById('viewport');
-            viewport.textContent = render3DView();
-
-            const d = dirs[player.dir];
-            const ahead = getCell(player.x + d.dx, player.y + d.dy);
-            const current = getCell(player.x, player.y);
-
-            document.getElementById('location').textContent =
-                `[ ${roomNames[current]} ] FACING ${d.name}`;
-
-            // Update buttons
-            document.getElementById('btn-forward').disabled = !canMove(player.x + d.dx, player.y + d.dy);
+        function render() {
+            markExplored();
+            document.getElementById('viewport').textContent = render3D();
+            renderMinimap();
+            const d = dirs[pdir];
+            const ahead = cell(px+d.dx, py+d.dy);
+            document.getElementById('location').textContent = `${names[cell(px,py)]||'?'} [${d.n}]`;
+            document.getElementById('btn-fwd').disabled = !canGo(px+d.dx, py+d.dy);
             document.getElementById('btn-enter').style.display = ahead > 1 ? 'inline-block' : 'none';
         }
 
         function move() {
-            const d = dirs[player.dir];
-            const newX = player.x + d.dx;
-            const newY = player.y + d.dy;
-
-            if (canMove(newX, newY)) {
-                player.x = newX;
-                player.y = newY;
-                renderView();
-            }
+            const d = dirs[pdir];
+            if(canGo(px+d.dx, py+d.dy)) { px+=d.dx; py+=d.dy; render(); }
         }
 
-        function turn(direction) {
-            if (direction === 'left') {
-                player.dir = (player.dir + 3) % 4;
-            } else {
-                player.dir = (player.dir + 1) % 4;
-            }
-            renderView();
+        function turn(dir) {
+            pdir = (pdir + (dir==='left' ? 3 : 1)) % 4;
+            render();
         }
 
         function enterRoom() {
-            const d = dirs[player.dir];
-            const ahead = getCell(player.x + d.dx, player.y + d.dy);
+            const d = dirs[pdir];
+            const ahead = cell(px+d.dx, py+d.dy);
+            if(ahead > 1) showRoom(ahead);
+        }
 
-            if (ahead > 1) {
-                showRoomContent(ahead);
+        function showRoom(type) {
+            const inner = document.getElementById('room-inner');
+            if(type === 2) {
+                inner.innerHTML = `<h1>ABOUT</h1><div class="content"><p>DIMITRIJE GUJANICIC</p></div>`;
+            } else if(type === 3) {
+                inner.innerHTML = `<h1 class="easter-egg">???</h1><div class="content easter-egg"><p>YOU FOUND IT</p></div>`;
+            } else if(type === 4) {
+                inner.innerHTML = `<h1>LINKEDIN</h1><div class="content"><a href="https://www.linkedin.com/in/dimitrije-gujanicic/" target="_blank">[CONNECT]</a></div>`;
             }
+            document.getElementById('room-content').classList.add('visible');
         }
 
-        function showRoomContent(roomType) {
-            const roomContent = document.getElementById('room-content');
-            const roomInner = document.getElementById('room-inner');
+        function closeRoom() { document.getElementById('room-content').classList.remove('visible'); }
 
-            if (roomType === 2) {
-                // About Me
-                roomInner.innerHTML = `
-                    <h1>ABOUT_ME.exe</h1>
-                    <div class="ascii-icon">
-    0 1 1 1 1 1 0
-   1 0 0 0 0 0 0 1
-  1 0 1 0 0 1 0 0 1
-  1 0 0 0 0 0 0 0 1
-  1 0 1 0 0 0 1 0 1
-  1 0 0 1 1 1 0 0 1
-   1 0 0 0 0 0 0 1
-    0 1 1 1 1 1 0
-                    </div>
-                    <div class="content">
-                        <p>> DIMITRIJE GUJANICIC</p>
-                        <p>> LOCATION: LOADING...</p>
-                        <p>> STATUS: ONLINE</p>
-                        <br>
-                        <p>Developer. Creator. Digital explorer.</p>
-                        <p>Building things that matter in the spaces between 0 and 1.</p>
-                        <br>
-                        <p>[ MORE DATA AVAILABLE UPON REQUEST ]</p>
-                    </div>
-                `;
-            } else if (roomType === 3) {
-                // Easter Egg
-                roomInner.innerHTML = `
-                    <h1 class="easter-egg">!!! EASTER EGG FOUND !!!</h1>
-                    <div class="ascii-icon easter-egg">
-  0 0 0 1 1 1 0 0 0
- 0 0 1 0 0 0 1 0 0
- 0 1 0 1 0 1 0 1 0
- 0 1 0 0 0 0 0 1 0
- 0 1 0 1 1 1 0 1 0
- 0 0 1 0 0 0 1 0 0
-  0 0 0 1 1 1 0 0 0
-                    </div>
-                    <div class="content easter-egg">
-                        <p>CONGRATULATIONS!</p>
-                        <p>You found the secret room.</p>
-                        <br>
-                        <p>Here's a secret:</p>
-                        <p style="font-size: 24px;">"The matrix has you..."</p>
-                        <br>
-                        <p>But you're awake now.</p>
-                        <p>Keep exploring. Keep questioning.</p>
-                        <p>01001000 01000101 01001100 01001100 01001111</p>
-                    </div>
-                `;
-            } else if (roomType === 4) {
-                // LinkedIn
-                roomInner.innerHTML = `
-                    <h1>LINKEDIN.connect()</h1>
-                    <div class="ascii-icon">
-  1 1 1 1 1 1 1 1 1
-  1 0 0 0 0 0 0 0 1
-  1 0 1 1 0 0 0 0 1
-  1 0 1 1 0 0 0 0 1
-  1 0 0 0 0 0 0 0 1
-  1 0 1 1 0 1 1 1 1
-  1 0 1 1 0 1 1 1 1
-  1 0 1 1 0 1 1 1 1
-  1 1 1 1 1 1 1 1 1
-                    </div>
-                    <div class="content">
-                        <p>> ESTABLISHING CONNECTION...</p>
-                        <p>> HANDSHAKE COMPLETE</p>
-                        <p>> LINK READY</p>
-                        <br>
-                        <a href="https://www.linkedin.com/in/dimitrije-gujanicic/" target="_blank">
-                            [ CONNECT WITH ME ON LINKEDIN ]
-                        </a>
-                    </div>
-                `;
-            }
-
-            roomContent.classList.add('visible');
-        }
-
-        function closeRoom() {
-            document.getElementById('room-content').classList.remove('visible');
-        }
-
-        // Keyboard controls
-        document.addEventListener('keydown', (e) => {
-            if (introScreen.style.display !== 'none') return;
-            if (document.getElementById('room-content').classList.contains('visible')) {
-                if (e.key === 'Escape') closeRoom();
+        document.addEventListener('keydown', e => {
+            if(document.getElementById('intro').style.display !== 'none') return;
+            if(document.getElementById('room-content').classList.contains('visible')) {
+                if(e.key==='Escape') closeRoom();
                 return;
             }
-
-            switch(e.key.toLowerCase()) {
-                case 'w':
-                case 'arrowup':
-                    move();
-                    break;
-                case 'a':
-                case 'arrowleft':
-                    turn('left');
-                    break;
-                case 'd':
-                case 'arrowright':
-                    turn('right');
-                    break;
-                case ' ':
-                    enterRoom();
-                    break;
-            }
+            if(e.key==='w'||e.key==='ArrowUp') move();
+            if(e.key==='a'||e.key==='ArrowLeft') turn('left');
+            if(e.key==='d'||e.key==='ArrowRight') turn('right');
+            if(e.key===' ') enterRoom();
         });
     </script>
 </body>
