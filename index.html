@@ -23,60 +23,60 @@
             align-items: center;
             z-index: 1000;
             background: #000;
+            cursor: none;
         }
 
-        #matrix-bg {
+        #matrix-canvas {
             position: absolute;
             inset: 0;
-            font-size: 14px;
-            line-height: 1.2;
-            overflow: hidden;
-            opacity: 0.6;
+            opacity: 0.8;
         }
 
-        .matrix-col {
-            position: absolute;
-            top: -100%;
-            color: #0f0;
-            text-shadow: 0 0 8px #0f0;
-            animation: fall linear infinite;
-            white-space: pre;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(calc(100vh + 100%)); }
+        #cursor-glow {
+            position: fixed;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(0,255,0,0.3) 0%, transparent 70%);
+            transform: translate(-50%, -50%);
+            z-index: 5;
         }
 
         #glitch-text {
-            font-size: clamp(32px, 8vw, 64px);
+            font-size: clamp(36px, 10vw, 80px);
             font-weight: bold;
-            letter-spacing: 8px;
+            letter-spacing: 12px;
             z-index: 10;
-            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
-            animation: glitch 0.3s infinite;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0, 0 0 60px #0f0;
+            animation: glitch 0.2s infinite;
         }
 
         @keyframes glitch {
-            0%, 90%, 100% { transform: translate(0); }
-            92% { transform: translate(-2px, 1px); }
-            94% { transform: translate(2px, -1px); }
+            0%, 85%, 100% { transform: translate(0); text-shadow: 0 0 20px #0f0, 0 0 40px #0f0; }
+            86% { transform: translate(-3px, 2px); text-shadow: -2px 0 #f00, 2px 0 #0ff; }
+            88% { transform: translate(3px, -2px); text-shadow: 2px 0 #f00, -2px 0 #0ff; }
+            90% { transform: translate(-2px, -1px); text-shadow: -1px 0 #f00, 1px 0 #0ff; }
         }
 
         #enter-prompt {
             display: none;
-            font-size: 16px;
-            margin-top: 30px;
+            font-size: 18px;
+            margin-top: 40px;
             z-index: 10;
-            animation: blink 1s infinite;
+            animation: pulse 1.5s infinite;
             cursor: pointer;
-            padding: 12px 24px;
-            border: 1px solid #0f0;
+            padding: 15px 35px;
+            border: 2px solid #0f0;
+            text-shadow: 0 0 10px #0f0;
+            background: rgba(0,255,0,0.1);
         }
 
-        #enter-prompt:hover { background: #0f0; color: #000; }
+        #enter-prompt:hover { background: #0f0; color: #000; box-shadow: 0 0 30px #0f0; }
 
-        @keyframes blink {
-            50% { opacity: 0.3; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.02); }
         }
 
         #game {
@@ -97,121 +97,145 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: clamp(8px, 1.5vw, 14px);
-            line-height: 1.1;
+            font-size: clamp(6px, 1.2vw, 12px);
+            line-height: 1.05;
             white-space: pre;
-            text-shadow: 0 0 4px #0f0;
+            text-shadow: 0 0 3px #0f0;
         }
 
         #minimap {
             position: absolute;
-            top: 15px;
-            right: 15px;
-            padding: 10px;
+            top: 10px;
+            right: 10px;
+            padding: 8px;
             border: 1px solid #0f0;
-            background: rgba(0,0,0,0.8);
-            font-size: 12px;
-            line-height: 1;
+            background: rgba(0,0,0,0.9);
+            font-size: 10px;
+            line-height: 1.1;
             white-space: pre;
+            text-shadow: 0 0 5px #0f0;
         }
 
         #minimap-title {
             text-align: center;
-            margin-bottom: 8px;
-            font-size: 10px;
-            opacity: 0.7;
+            margin-bottom: 5px;
+            font-size: 9px;
+            opacity: 0.6;
         }
 
         #hud {
-            padding: 15px;
+            padding: 12px 20px;
             border-top: 1px solid #0f0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: rgba(0,20,0,0.5);
         }
 
-        #location { font-size: 14px; }
+        #location { font-size: 13px; text-shadow: 0 0 8px #0f0; }
 
-        #controls {
-            display: flex;
-            gap: 8px;
-        }
+        #controls { display: flex; gap: 6px; }
 
         .btn {
             background: transparent;
             border: 1px solid #0f0;
             color: #0f0;
-            padding: 8px 16px;
+            padding: 6px 14px;
             font-family: inherit;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
+            transition: all 0.15s;
         }
 
-        .btn:hover { background: #0f0; color: #000; }
-        .btn:disabled { opacity: 0.2; cursor: not-allowed; }
+        .btn:hover { background: #0f0; color: #000; box-shadow: 0 0 10px #0f0; }
+        .btn:disabled { opacity: 0.15; cursor: not-allowed; }
 
         #room-content {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.97);
             z-index: 100;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 40px;
+            text-align: center;
         }
 
         #room-content.visible { display: flex; }
 
         #room-content h1 {
-            font-size: 28px;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px #0f0;
+            font-size: clamp(28px, 5vw, 48px);
+            margin-bottom: 30px;
+            text-shadow: 0 0 20px #0f0, 0 0 40px #0f0;
+            letter-spacing: 4px;
         }
 
         #room-content .content {
-            text-align: center;
-            font-size: 14px;
-            line-height: 1.6;
+            max-width: 600px;
+            font-size: clamp(14px, 2vw, 18px);
+            line-height: 1.8;
+        }
+
+        #room-content .ascii-art {
+            font-size: 8px;
+            line-height: 1;
+            margin: 20px 0;
+            opacity: 0.8;
         }
 
         #room-content a {
             color: #0f0;
             text-decoration: none;
-            border: 1px solid #0f0;
-            padding: 10px 20px;
+            border: 2px solid #0f0;
+            padding: 15px 40px;
             display: inline-block;
-            margin-top: 15px;
+            margin-top: 25px;
+            font-size: 16px;
+            transition: all 0.2s;
+            text-shadow: 0 0 10px #0f0;
         }
 
-        #room-content a:hover { background: #0f0; color: #000; }
+        #room-content a:hover { background: #0f0; color: #000; box-shadow: 0 0 30px #0f0; }
+
+        #room-content img {
+            max-width: 120px;
+            margin: 20px 0;
+            filter: brightness(0) invert(1) drop-shadow(0 0 10px #0f0);
+            opacity: 0.9;
+        }
 
         #close-room {
             position: absolute;
-            top: 20px;
-            right: 20px;
+            top: 25px;
+            right: 25px;
             background: transparent;
             border: 1px solid #0f0;
             color: #0f0;
-            padding: 8px 16px;
+            padding: 10px 20px;
             font-family: inherit;
             cursor: pointer;
+            font-size: 12px;
         }
 
-        .easter-egg { animation: rainbow 2s infinite; }
+        #close-room:hover { background: #0f0; color: #000; }
+
+        .easter-egg { animation: rainbow 1.5s infinite; }
 
         @keyframes rainbow {
-            0% { color: #f00; text-shadow: 0 0 15px #f00; }
-            33% { color: #0f0; text-shadow: 0 0 15px #0f0; }
-            66% { color: #00f; text-shadow: 0 0 15px #00f; }
-            100% { color: #f00; text-shadow: 0 0 15px #f00; }
+            0% { color: #f00; text-shadow: 0 0 20px #f00; }
+            25% { color: #ff0; text-shadow: 0 0 20px #ff0; }
+            50% { color: #0f0; text-shadow: 0 0 20px #0f0; }
+            75% { color: #0ff; text-shadow: 0 0 20px #0ff; }
+            100% { color: #f00; text-shadow: 0 0 20px #f00; }
         }
     </style>
 </head>
 <body>
     <div id="intro">
-        <div id="matrix-bg"></div>
+        <canvas id="matrix-canvas"></canvas>
+        <div id="cursor-glow"></div>
         <div id="glitch-text">GUJANICIC</div>
         <div id="enter-prompt" onclick="enterGame()">[ENTER]</div>
     </div>
@@ -242,24 +266,68 @@
     </div>
 
     <script>
-        // INTRO
-        function createMatrix() {
-            const bg = document.getElementById('matrix-bg');
-            const cols = Math.floor(window.innerWidth / 18);
-            for (let i = 0; i < cols; i++) {
-                const col = document.createElement('div');
-                col.className = 'matrix-col';
-                col.style.left = i * 18 + 'px';
-                col.style.animationDuration = (2 + Math.random() * 2) + 's';
-                col.style.animationDelay = Math.random() * 2 + 's';
-                let t = '';
-                for (let j = 0; j < 40; j++) t += (Math.random() > 0.5 ? '1' : '0') + '\n';
-                col.textContent = t;
-                bg.appendChild(col);
+        // MATRIX RAIN WITH CANVAS
+        const canvas = document.getElementById('matrix-canvas');
+        const ctx = canvas.getContext('2d');
+        let mouseX = 0, mouseY = 0;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // Matrix characters - mix of symbols
+        const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン@#$%^&*(){}[]<>?/\\|~`';
+        const fontSize = 14;
+        const columns = Math.ceil(canvas.width / fontSize);
+        const drops = Array(columns).fill(1);
+        const speeds = Array(columns).fill(0).map(() => 0.5 + Math.random() * 0.8);
+        const brightness = Array(columns).fill(0).map(() => Math.random());
+
+        function drawMatrix() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            for (let i = 0; i < drops.length; i++) {
+                const x = i * fontSize;
+                const y = drops[i] * fontSize;
+
+                // Distance from cursor
+                const dist = Math.sqrt((x - mouseX) ** 2 + (y - mouseY) ** 2);
+                const glow = Math.max(0, 1 - dist / 200);
+
+                // Character brightness based on position and cursor
+                const b = Math.min(255, 100 + glow * 155 + brightness[i] * 50);
+                ctx.fillStyle = `rgb(0, ${b}, 0)`;
+                ctx.shadowBlur = glow * 20;
+                ctx.shadowColor = '#0f0';
+
+                ctx.font = `${fontSize}px monospace`;
+                const char = chars[Math.floor(Math.random() * chars.length)];
+                ctx.fillText(char, x, y);
+
+                ctx.shadowBlur = 0;
+
+                if (y > canvas.height && Math.random() > 0.98) {
+                    drops[i] = 0;
+                    speeds[i] = 0.5 + Math.random() * 0.8;
+                }
+                drops[i] += speeds[i];
             }
+            requestAnimationFrame(drawMatrix);
         }
 
-        createMatrix();
+        // Cursor tracking
+        document.getElementById('intro').addEventListener('mousemove', e => {
+            mouseX = e.clientX;
+            mouseY = e.clientY;
+            document.getElementById('cursor-glow').style.left = e.clientX + 'px';
+            document.getElementById('cursor-glow').style.top = e.clientY + 'px';
+        });
+
+        drawMatrix();
         setTimeout(() => document.getElementById('enter-prompt').style.display = 'block', 1500);
 
         function enterGame() {
@@ -272,22 +340,28 @@
             if (e.key === 'Enter' && document.getElementById('intro').style.display !== 'none') enterGame();
         });
 
-        // MAP: 0=wall, 1=hall, 2=about, 3=easter, 4=linkedin
+        // BIGGER MAP: 0=wall, 1=hall, 2=about, 3=easter, 4=linkedin
         const map = [
-            [0,0,0,0,0,0,0,0,0,0,0],
-            [0,2,2,0,3,3,0,4,4,4,0],
-            [0,2,2,0,3,3,0,4,4,4,0],
-            [0,1,1,1,1,1,1,1,1,1,0],
-            [0,0,0,0,0,1,0,0,0,0,0],
-            [0,0,0,0,0,1,0,0,0,0,0],
-            [0,0,0,0,0,1,0,0,0,0,0],
-            [0,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+            [0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0],
+            [0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0],
+            [0,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,3,3,3,0],
+            [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],
+            [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,4,4,4,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,4,4,4,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,4,4,4,1,0,0,0,0,0,0,0,0,0,0],
+            [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
         ];
 
         const names = { 1: 'HALLWAY', 2: 'ABOUT', 3: '???', 4: 'LINKEDIN' };
         const symbols = { 1: '.', 2: 'A', 3: '?', 4: 'L' };
         const explored = new Set();
-        let px = 5, py = 6, pdir = 0;
+        let px = 10, py = 9, pdir = 0;
         const dirs = [{dx:0,dy:-1,n:'N'},{dx:1,dy:0,n:'E'},{dx:0,dy:1,n:'S'},{dx:-1,dy:0,n:'W'}];
 
         function cell(x,y) { return (y>=0 && y<map.length && x>=0 && x<map[0].length) ? map[y][x] : 0; }
@@ -295,9 +369,8 @@
 
         function markExplored() {
             explored.add(`${px},${py}`);
-            // reveal adjacent
-            for (let dy = -1; dy <= 1; dy++) {
-                for (let dx = -1; dx <= 1; dx++) {
+            for (let dy = -2; dy <= 2; dy++) {
+                for (let dx = -2; dx <= 2; dx++) {
                     explored.add(`${px+dx},${py+dy}`);
                 }
             }
@@ -323,46 +396,42 @@
         }
 
         function render3D() {
-            const W = 50, H = 20;
+            const W = 70, H = 28;
             const v = Array.from({length:H}, () => Array(W).fill(' '));
             const d = dirs[pdir];
             const a1 = cell(px+d.dx, py+d.dy);
             const a2 = cell(px+d.dx*2, py+d.dy*2);
+            const a3 = cell(px+d.dx*3, py+d.dy*3);
             const l1 = cell(px+dirs[(pdir+3)%4].dx, py+dirs[(pdir+3)%4].dy);
             const r1 = cell(px+dirs[(pdir+1)%4].dx, py+dirs[(pdir+1)%4].dy);
 
-            // floor/ceiling first
-            for(let x=0;x<W;x++) { v[0][x]=v[1][x]='`'; v[H-1][x]=v[H-2][x]='.'; }
+            // floor/ceiling
+            for(let x=0;x<W;x++) { v[0][x]=v[1][x]='~'; v[H-1][x]=v[H-2][x]='_'; }
 
             // left wall
-            if(l1===0) for(let y=2;y<H-2;y++) for(let x=0;x<6;x++) if(Math.random()<(6-x)/8) v[y][x]=['0','1'][(x+y)%2];
+            if(l1===0) for(let y=2;y<H-2;y++) for(let x=0;x<8;x++) if(Math.random()<(8-x)/10) v[y][x]=['0','1'][(x+y)%2];
 
             // right wall
-            if(r1===0) for(let y=2;y<H-2;y++) for(let x=W-6;x<W;x++) if(Math.random()<(x-W+7)/8) v[y][x]=['0','1'][(x+y)%2];
+            if(r1===0) for(let y=2;y<H-2;y++) for(let x=W-8;x<W;x++) if(Math.random()<(x-W+9)/10) v[y][x]=['0','1'][(x+y)%2];
 
-            // front wall or door
+            // front
             if(a1===0) {
-                // solid wall ahead
-                for(let y=3;y<H-3;y++) for(let x=8;x<W-8;x++) v[y][x]=['0','1'][(x+y)%2];
+                for(let y=3;y<H-3;y++) for(let x=10;x<W-10;x++) v[y][x]=['0','1'][(x+y)%2];
             } else if(a1>1) {
-                // door to a room - draw it clearly
-                const doorL = 12, doorR = W-12, doorT = 3, doorB = H-3;
-                // clear door area
+                const doorL = 18, doorR = W-18, doorT = 4, doorB = H-4;
                 for(let y=doorT;y<doorB;y++) for(let x=doorL;x<doorR;x++) v[y][x]=' ';
-                // door frame
                 for(let x=doorL;x<doorR;x++) { v[doorT][x]='='; v[doorB-1][x]='='; }
                 for(let y=doorT;y<doorB;y++) { v[y][doorL]='|'; v[y][doorR-1]='|'; }
-                // room label centered
                 const lbl = '[ ' + (names[a1] || '?') + ' ]';
                 const lx = Math.floor((W-lbl.length)/2);
-                for(let i=0;i<lbl.length;i++) v[Math.floor(H/2)][lx+i] = lbl[i];
-                // ENTER prompt
-                const prompt = 'SPACE TO ENTER';
+                for(let i=0;i<lbl.length;i++) v[Math.floor(H/2)-1][lx+i] = lbl[i];
+                const prompt = '[ SPACE ]';
                 const px2 = Math.floor((W-prompt.length)/2);
-                for(let i=0;i<prompt.length;i++) v[Math.floor(H/2)+2][px2+i] = prompt[i];
+                for(let i=0;i<prompt.length;i++) v[Math.floor(H/2)+1][px2+i] = prompt[i];
             } else if(a2===0) {
-                // wall at distance 2
-                for(let y=5;y<H-5;y++) for(let x=12;x<W-12;x++) v[y][x]=['0','1'][(x+y)%2];
+                for(let y=6;y<H-6;y++) for(let x=16;x<W-16;x++) v[y][x]=['0','1'][(x+y)%2];
+            } else if(a3===0) {
+                for(let y=8;y<H-8;y++) for(let x=22;x<W-22;x++) v[y][x]=['0','1'][(x+y)%2];
             }
 
             return v.map(r=>r.join('')).join('\n');
@@ -374,7 +443,7 @@
             renderMinimap();
             const d = dirs[pdir];
             const ahead = cell(px+d.dx, py+d.dy);
-            document.getElementById('location').textContent = `${names[cell(px,py)]||'?'} [${d.n}]`;
+            document.getElementById('location').textContent = `${names[cell(px,py)]||'HALLWAY'} [${d.n}]`;
             document.getElementById('btn-fwd').disabled = !canGo(px+d.dx, py+d.dy);
             document.getElementById('btn-back').disabled = !canGo(px-d.dx, py-d.dy);
             document.getElementById('btn-enter').style.display = ahead > 1 ? 'inline-block' : 'none';
@@ -404,11 +473,28 @@
         function showRoom(type) {
             const inner = document.getElementById('room-inner');
             if(type === 2) {
-                inner.innerHTML = `<h1>ABOUT</h1><div class="content"><p>DIMITRIJE GUJANICIC</p></div>`;
+                inner.innerHTML = `
+                    <h1>ABOUT</h1>
+                    <img src="https://www.svgrepo.com/show/404919/skull-and-crossbones.svg" alt="skull">
+                    <div class="content">
+                        <p>DIMITRIJE GUJANICIC</p>
+                    </div>
+                `;
             } else if(type === 3) {
-                inner.innerHTML = `<h1 class="easter-egg">???</h1><div class="content easter-egg"><p>YOU FOUND IT</p></div>`;
+                inner.innerHTML = `
+                    <h1 class="easter-egg">? ? ?</h1>
+                    <img src="https://www.svgrepo.com/show/490577/bat.svg" alt="bat">
+                    <div class="content easter-egg">
+                        <p>YOU FOUND THE SECRET</p>
+                    </div>
+                `;
             } else if(type === 4) {
-                inner.innerHTML = `<h1>LINKEDIN</h1><div class="content"><a href="https://www.linkedin.com/in/dimitrije-gujanicic/" target="_blank">[CONNECT]</a></div>`;
+                inner.innerHTML = `
+                    <h1>LINKEDIN</h1>
+                    <div class="content">
+                        <a href="https://www.linkedin.com/in/dimguj/" target="_blank">[CONNECT]</a>
+                    </div>
+                `;
             }
             document.getElementById('room-content').classList.add('visible');
         }
